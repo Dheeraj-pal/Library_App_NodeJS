@@ -32,8 +32,8 @@ Create a `.env` file in the root directory of the project and add the following 
 
 ```
 PORT=9000
-MONGODB_URI=mongodb+srv://dheerajpal:dheerajpal@cluster0.lzhy20p.mongodb.net/LibraryApp?retryWrites=true&w=majority
-JWT_SECRET=*/56*3rv$j@sd/*
+MONGODB_URI=<your-mongodb-uri>
+JWT_SECRET=<your-secret-key>
 ```
 4. Start the app:
 ```
