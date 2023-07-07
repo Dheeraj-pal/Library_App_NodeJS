@@ -3,11 +3,12 @@ import { Book } from "../models/book.model";
 
 export const createBook = async (req: Request, res: Response) => {
   try {
-    const { title, author } = req.body;
+    const { title, author, creatorID } = req.body;
 
     const book = new Book({
       title,
       author,
+      creatorID,
       createdAt: new Date(),
     });
 
@@ -28,19 +29,32 @@ export const getBooks = async (req: Request, res: Response) => {
     let books;
 
     if (old === "1") {
-      books = await Book.find({
-        createdAt: { $lte: new Date(Date.now() - 10 * 60 * 1000) },
-      });
-    } else if (New === "1") {
-      books = await Book.find({
-        createdAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) },
-      });
-    } else {
-      // books = await Book.find();
       if (user.roles.includes("VIEWER") || user.roles.includes("CREATOR")) {
-        // Only show books created by the viewer
         books = await Book.find({
-          authorEmail: user.email,
+          creatorID: user.creatorID,
+          createdAt: { $lte: new Date(Date.now() - 10 * 60 * 1000) },
+        });
+      } else if (user.roles.includes("VIEWALL")) {
+        books = await Book.find({
+          createdAt: { $lte: new Date(Date.now() - 10 * 60 * 1000) },
+        });
+      }
+    } else if (New === "1") {
+      if (user.roles.includes("VIEWER") || user.roles.includes("CREATOR")) {
+        books = await Book.find({
+          creatorID: user.creatorID,
+          createdAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) },
+        });
+      } else if (user.roles.includes("VIEWALL")) {
+        books = await Book.find({
+          createdAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) },
+        });
+      }
+    } else {
+      if (user.roles.includes("VIEWER") || user.roles.includes("CREATOR")) {
+        // Only show books created by the viewer or creator
+        books = await Book.find({
+          creatorID: user.creatorID,
         });
       } else if (user.roles.includes("VIEWALL")) {
         // Show all books
