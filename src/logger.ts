@@ -7,7 +7,7 @@ const logger = winston.createLogger({
     winston.format.timestamp(),
     winston.format.json()
   ),
-  
+
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({ filename: "logs.log" }),
@@ -20,7 +20,9 @@ export const loggerMiddleware = (
   next: NextFunction
 ) => {
   const { method, path, ip } = req;
-  logger.info(`IP - ${ip}, METHOD - ${method}, PATH - ${path}`);
+  logger.info(
+    `IP - ${ip}, METHOD - ${method}, PATH - ${path}, STATUS - ${res.statusCode}`
+  );
   next();
 };
 
